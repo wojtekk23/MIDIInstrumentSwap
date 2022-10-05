@@ -6,8 +6,35 @@ logger = logging.getLogger('logger')
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
-ch.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+ch.setFormatter(logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 logger.addHandler(ch)
+
+
+class InstrumentSwapper:
+    def __init__(self, input_file: str):
+        self.mid = mido.MidiFile(input_file, clip=True)
+
+    def swap_instrument(self, prog: int, channel: int) -> mido.MidiFile:
+        new_midi = mido.MidiFile(
+            type=self.mid.type,
+            ticks_per_beat=self.mid.ticks_per_beat,
+            charset=self.mid.charset,
+            debug=self.mid.debug,
+            clip=self.mid.clip,
+            tracks=[track.copy() for track in self.mid.tracks]
+        )
+        for track in new_midi.tracks:
+            cp = mido.Message(
+                'program_change',
+                channel=channel,
+                program=prog,
+                time=0
+            )
+            track.insert(2, cp)
+
+        return new_midi
+
 
 def main():
     # parse arguments
@@ -20,15 +47,8 @@ def main():
     args = parser.parse_args()
     logger.debug(args)
 
-    # read midi file
-    mid = mido.MidiFile(args.input_file, clip=True)
-
-    # swap instruments
-    for track in mid.tracks:
-        cp = mido.Message('program_change', channel=args.channel, program=args.prog, time=0)
-        track.insert(2, cp)
-
-    # save the new midi file
+    swapper = InstrumentSwapper(args.input_file)
+    mid = swapper.swap_instrument(args.prog, args.channel)
     mid.save(args.output_file)
 
 
