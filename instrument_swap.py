@@ -24,14 +24,15 @@ class InstrumentSwapper:
             clip=self.mid.clip,
             tracks=[track.copy() for track in self.mid.tracks]
         )
-        for track in new_midi.tracks:
+        for i, track in enumerate(new_midi.tracks):
+            new_midi.tracks[i] = [m for m in track if m.dict()['type'] != 'program_change']
             cp = mido.Message(
                 'program_change',
                 channel=channel,
                 program=prog,
                 time=0
             )
-            track.insert(2, cp)
+            new_midi.tracks[i].insert(0, cp)
 
         return new_midi
 

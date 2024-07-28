@@ -1,6 +1,7 @@
 import argparse
 import mido
 import os 
+import pathlib
 from instrument_swap import InstrumentSwapper
 
 
@@ -18,7 +19,8 @@ def main():
     # http://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html#BMA1_4 
     for midi_file in midi_files:
         swapper = InstrumentSwapper(midi_file)
-        file_root = midi_file.split('.')[0]
+        file_path = pathlib.Path(midi_file)
+        file_root = file_path.stem
 
         for prog in range(1, 105):
             new_midi = swapper.swap_instrument(prog, 0)
