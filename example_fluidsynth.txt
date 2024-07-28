@@ -1,0 +1,1 @@
+fluidsynth -v -g 0.8 /home/wojtekk23/Dokumenty/lmms/samples/soundfonts/GeneralUser\ GS\ SoftSynth\ v1.44/GeneralUser\ GS\ SoftSynth\ v1.44.sf2 -q test/test_004.mid

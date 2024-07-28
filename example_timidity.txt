@@ -1,0 +1,1 @@
+timidity test/test_004.mid -x 'soundfont "/home/wojtekk23/Dokumenty/lmms/samples/soundfonts/GeneralUser GS SoftSynth v1.44/GeneralUser GS SoftSynth v1.44.sf2"' -s 22050 --output-mode=wMsl -o test_timidity.wav
